@@ -3,8 +3,25 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { CheckCircle2, Package, Headset, RefreshCcw, Palette, Megaphone, BarChart3, Truck } from "lucide-react";
+
+function SubmissionBanner() {
+  const searchParams = useSearchParams()
+  const [showBanner, setShowBanner] = useState(false)
+  useEffect(() => {
+    if (searchParams.get('submitted') === '1') setShowBanner(true)
+  }, [searchParams])
+  if (!showBanner) return null
+  return (
+    <div className="bg-green-600/20 text-green-300 border border-green-600/40 px-4 py-3 text-sm">
+      <div className="container flex items-center justify-between gap-4">
+        <p>Thanks! Your request was sent. We’ll get back to you shortly.</p>
+        <button onClick={() => setShowBanner(false)} className="btn-secondary">Close</button>
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   const values = [
@@ -26,22 +43,11 @@ export default function HomePage() {
     { name: 'Elite', price: '$999/mo', features: ['Advanced logistics', 'Campaign assets', 'Weekly restock + reporting'] },
   ] as const
 
-  const searchParams = useSearchParams()
-  const [showBanner, setShowBanner] = useState(false)
-  useEffect(() => {
-    if (searchParams.get('submitted') === '1') setShowBanner(true)
-  }, [searchParams])
-
   return (
     <main>
-      {showBanner && (
-        <div className="bg-green-600/20 text-green-300 border border-green-600/40 px-4 py-3 text-sm">
-          <div className="container flex items-center justify-between gap-4">
-            <p>Thanks! Your request was sent. We’ll get back to you shortly.</p>
-            <button onClick={() => setShowBanner(false)} className="btn-secondary">Close</button>
-          </div>
-        </div>
-      )}
+      <Suspense fallback={null}>
+        <SubmissionBanner />
+      </Suspense>
 
       <section className="relative section overflow-hidden min-h-[70vh] flex items-center">
         <img src="/images/collage-hero.svg" alt="Packaging and merch collage" className="absolute inset-0 h-full w-full object-cover opacity-25" />
