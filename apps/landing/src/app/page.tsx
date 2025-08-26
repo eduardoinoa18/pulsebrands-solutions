@@ -203,7 +203,10 @@ export default function HomePage() {
             <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
             <button type="submit" className="btn-primary w-fit">Send</button>
           </form>
-          <p className="mt-3 text-sm text-white/60">Emails will go to QUOTE_INBOX (set in .env.local). Add RESEND_API_KEY to send via Resend.</p>
+          <p className="mt-3 text-sm text-white/60">We’ll get back to you within 1–2 business days. Your info stays private.</p>
+          {process.env.NODE_ENV === 'development' && (
+            <p className="mt-2 text-xs text-white/40">Dev note: set QUOTE_INBOX and optional RESEND_API_KEY/RESEND_FROM in your environment to receive emails.</p>
+          )}
         </div>
       </section>
 
