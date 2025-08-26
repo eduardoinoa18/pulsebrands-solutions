@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Pulse icon">
+  <defs>
+    <filter id="glow"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <g fill="none" stroke="#00E5FF" stroke-width="6" filter="url(#glow)">
+    <path d="M10 70 H40 L52 30 L66 98 L86 60 L94 70 H118" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

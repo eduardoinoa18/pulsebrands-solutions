@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pulsebrandsolutions.com/sitemap.xml
