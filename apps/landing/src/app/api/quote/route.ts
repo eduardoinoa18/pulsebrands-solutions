@@ -22,15 +22,36 @@ export async function POST(request: Request) {
 
   const subject = `New Quote Request — ${company}`
   const text = `New Quote Request\n\nCompany/Name: ${company}\nEmail: ${email}\nPhone: ${phone}\nService: ${service}\nDetails: ${details}`
+  const html = `
+    <h2>New Quote Request</h2>
+    <p><strong>Company/Name:</strong> ${company}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+    <p><strong>Service:</strong> ${service}</p>
+    <p><strong>Details:</strong><br/>${details.replace(/\n/g, '<br/>')}</p>
+  `
 
   try {
-    const apiKey = process.env.RESEND_API_KEY
-    const from = process.env.RESEND_FROM || 'PulseBrand <notify@pulsebrandsolutions.com>'
-
-    if (apiKey) {
+    const gmailUser = process.env.EMAIL_USER
+    const gmailPass = process.env.EMAIL_PASS
+    if (gmailUser && gmailPass) {
+      const nodemailer = (await import('nodemailer')).default
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: gmailUser, pass: gmailPass },
+      })
+      await transporter.sendMail({
+        from: `PulseBrand <${gmailUser}>`,
+        to,
+        subject,
+        text,
+        html,
+      })
+    } else if (process.env.RESEND_API_KEY) {
       const { Resend } = await import('resend')
-      const resend = new Resend(apiKey)
-      await resend.emails.send({ to, from, subject, text })
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      const from = process.env.RESEND_FROM || 'PulseBrand <notify@pulsebrandsolutions.com>'
+      await resend.emails.send({ to, from, subject, text, html })
     } else {
       console.log('[QUOTE EMAIL]', { to, subject, text })
     }
