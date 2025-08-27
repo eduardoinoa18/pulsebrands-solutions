@@ -33,6 +33,17 @@ export async function POST(request: Request) {
     <p><strong>Details:</strong><br/>${details.replace(/\n/g, '<br/>')}</p>
   `
 
+  // Prepare confirmation email to the submitter
+  const confirmSubject = 'We received your request — PulseBrand Solutions'
+  const confirmText = `Hi ${company},\n\nThanks for reaching out to PulseBrand Solutions! We received your request for ${service}. Our team will get back to you shortly.\n\nHere is a copy of your message:\n${details}\n\n— PulseBrand Team`
+  const confirmHtml = `
+    <p>Hi ${company},</p>
+    <p>Thanks for reaching out to <strong>PulseBrand Solutions</strong>! We received your request for <strong>${service}</strong>. Our team will get back to you shortly.</p>
+    <p><strong>Your message:</strong></p>
+    <blockquote style="margin:0;padding:12px;border-left:4px solid #ccc;background:#f9f9f9;">${details.replace(/\n/g, '<br/>')}</blockquote>
+    <p>— PulseBrand Team</p>
+  `
+
   try {
     const gmailUser = process.env.EMAIL_USER
     const gmailPass = process.env.EMAIL_PASS
@@ -49,13 +60,36 @@ export async function POST(request: Request) {
         text,
         html,
       })
+
+      // Send confirmation to submitter
+      if (email.includes('@')) {
+        await transporter.sendMail({
+          from: `PulseBrand <${gmailUser}>`,
+          to: email,
+          subject: confirmSubject,
+          text: confirmText,
+          html: confirmHtml,
+        })
+      }
     } else if (process.env.RESEND_API_KEY) {
       const { Resend } = await import('resend')
       const resend = new Resend(process.env.RESEND_API_KEY)
       const from = process.env.RESEND_FROM || 'PulseBrand <notify@pulsebrandsolutions.com>'
       await resend.emails.send({ to, from, subject, text, html })
+
+      // Send confirmation to submitter
+      if (email.includes('@')) {
+        await resend.emails.send({
+          to: email,
+          from,
+          subject: confirmSubject,
+          text: confirmText,
+          html: confirmHtml,
+        })
+      }
     } else {
       console.log('[QUOTE EMAIL]', { to, subject, text })
+      console.log('[QUOTE CONFIRMATION NOT SENT - no provider configured]', { email })
     }
   } catch (e) {
     console.error('QUOTE SEND ERROR', e)
