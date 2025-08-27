@@ -96,5 +96,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Failed to submit request' }, { status: 500 })
   }
 
-  return NextResponse.redirect(new URL('/?submitted=1', request.url))
+  // Important: use 303 so the browser follows with a GET to the homepage instead of repeating POST (avoids 405)
+  return NextResponse.redirect(new URL('/?submitted=1', request.url), 303)
 }
