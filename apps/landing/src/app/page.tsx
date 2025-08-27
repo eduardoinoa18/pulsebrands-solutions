@@ -193,6 +193,7 @@ export default function HomePage() {
           <form className="mt-6 grid gap-4 max-w-2xl" action="/api/quote" method="POST">
             <input type="text" name="company" placeholder="Company name" className="rounded-md bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-neonBlue" required />
             <input type="email" name="email" placeholder="Email" className="rounded-md bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-neonBlue" required />
+            <input type="tel" name="phone" placeholder="Phone (optional)" className="rounded-md bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-neonBlue" />
             <select name="service" className="rounded-md bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-neonBlue" required>
               <option value="Packaging">Branded Packaging</option>
               <option value="Merch">Merch</option>
@@ -205,7 +206,7 @@ export default function HomePage() {
           </form>
           <p className="mt-3 text-sm text-white/60">We’ll get back to you within 1–2 business days. Your info stays private.</p>
           {process.env.NODE_ENV === 'development' && (
-            <p className="mt-2 text-xs text-white/40">Dev note: set QUOTE_INBOX and optional RESEND_API_KEY/RESEND_FROM in your environment to receive emails.</p>
+            <p className="mt-2 text-xs text-white/40">Dev note: set EMAIL_USER/EMAIL_PASS for Gmail or RESEND_API_KEY/RESEND_FROM for Resend in your environment to receive emails.</p>
           )}
         </div>
       </section>
